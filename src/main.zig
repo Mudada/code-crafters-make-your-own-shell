@@ -1,5 +1,23 @@
 const std = @import("std");
 
+const InvalidCommand = struct {
+    context: []const u8,
+
+    pub fn run(self: InvalidCommand) void {
+        std.debug.print("{s}: command not found", .{self.context});
+    }
+};
+
+const Command = union(enum) {
+    invalid: InvalidCommand,
+
+    pub fn run(self: Command) void {
+        switch (self) {
+            inline else => |case| case.run(),
+        }
+    }
+};
+
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
     try stdout.print("$ ", .{});
@@ -9,5 +27,6 @@ pub fn main() !void {
     const user_input = try stdin.readUntilDelimiter(&buffer, '\n');
 
     // TODO: Handle user input
-    _ = user_input;
+    var cmd: Command = Command{ .invalid = InvalidCommand{ .context = user_input } };
+    cmd.run();
 }
