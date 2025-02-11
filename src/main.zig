@@ -20,13 +20,13 @@ const Command = union(enum) {
 
 pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
-    try stdout.print("$ ", .{});
 
     const stdin = std.io.getStdIn().reader();
     var buffer: [1024]u8 = undefined;
 
     // TODO: Handle user input
     while (true) {
+        try stdout.print("$ ", .{});
         const user_input = try stdin.readUntilDelimiter(&buffer, '\n');
         var cmd: Command = Command{ .invalid = InvalidCommand{ .context = user_input } };
         cmd.run();
