@@ -4,7 +4,7 @@ const InvalidCommand = struct {
     context: []const u8,
 
     pub fn run(self: InvalidCommand) void {
-        std.debug.print("{s}: command not found", .{self.context});
+        std.debug.print("{s}: command not found\n", .{self.context});
     }
 };
 
@@ -24,9 +24,11 @@ pub fn main() !void {
 
     const stdin = std.io.getStdIn().reader();
     var buffer: [1024]u8 = undefined;
-    const user_input = try stdin.readUntilDelimiter(&buffer, '\n');
 
     // TODO: Handle user input
-    var cmd: Command = Command{ .invalid = InvalidCommand{ .context = user_input } };
-    cmd.run();
+    while (true) {
+        const user_input = try stdin.readUntilDelimiter(&buffer, '\n');
+        var cmd: Command = Command{ .invalid = InvalidCommand{ .context = user_input } };
+        cmd.run();
+    }
 }
